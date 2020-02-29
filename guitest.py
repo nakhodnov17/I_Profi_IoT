@@ -1,83 +1,101 @@
-# -*- coding: utf-8 -*-
-#
-# Form implementation generated from reading ui file 'qline.ui'
-#
-# Created by: PyQt5 UI code generator 5.11.3
-#
-# WARNING! All changes made in this file will be lost!
-
-
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import *
 import sys
+import random
+import time
+
+import ssl
+import scanf
+import serial
+
+import numpy as np
+from time import sleep
+
+import paho.mqtt.client as mqtt
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(785, 600)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(10, 10, 291, 31))
-        self.lineEdit.setObjectName("lineEdit")
-        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_2.setGeometry(QtCore.QRect(10, 50, 291, 31))
-        self.lineEdit_2.setObjectName("lineEdit_2")
-        self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_3.setGeometry(QtCore.QRect(10, 90, 291, 31))
-        self.lineEdit_3.setObjectName("lineEdit_3")
-        self.lineEdit_4 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_4.setGeometry(QtCore.QRect(10, 130, 291, 31))
-        self.lineEdit_4.setObjectName("lineEdit_4")
-        self.lineEdit_5 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_5.setGeometry(QtCore.QRect(10, 170, 291, 31))
-        self.lineEdit_5.setObjectName("lineEdit_5")
-        self.lineEdit_6 = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit_6.setGeometry(QtCore.QRect(10, 210, 291, 31))
-        self.lineEdit_6.setObjectName("lineEdit_6")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 785, 25))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-
-
-class mywindow(QtWidgets.QMainWindow):
+class MainWindow(QWidget):
     def __init__(self):
-        super(mywindow, self).__init__()
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+        super().__init__()
+        self.initUI()
 
-        # Меняем текст
-        self.ui.lineEdit.setText("Добро пожаловать на PythonScripts")
+    def initUI(self):
+        self.setWindowTitle("Main")
 
-        # указать максимальную длину
-        self.ui.lineEdit_2.setMaxLength(10)
+        self.layout = QGridLayout()
+        self.setLayout(self.layout)
 
-        # ввод пароля
-        self.ui.lineEdit_3.setEchoMode(QtWidgets.QLineEdit.Password)
-        # только чтение без изменения содержимого.
-        self.ui.lineEdit_4.setReadOnly(True)
+        self.label = QLabel()
+        self.layout.addWidget(self.label, 0, 0)
 
-        # меняем цвет вводимого текста
-        self.ui.lineEdit_5.setStyleSheet("color: rgb(28, 43, 255);")
+        self.line = QLineEdit()
+        self.layout.addWidget(self.line, 0, 1)
+        self.line.setText("text")
 
-        # изменение цвета фона QLineEdit
-        self.ui.lineEdit_6.setStyleSheet("background-color: rgb(28, 43, 255);")
+        self.button = QPushButton()
+        self.layout.addWidget(self.button, 0, 2)
+        self.button.setText("PUBLISH")
+
+        def setnTicks():
+            value = int(self.line.text())
+            client.publish('base/state/nTicks', value)
+
+        self.button.clicked.connect(setnTicks)
 
 
-app = QtWidgets.QApplication([])
-application = mywindow()
-application.show()
+class LogicThread(QtCore.QThread):
+    def __init__(self, window):
+        super().__init__()
+        self.window = window
 
-sys.exit(app.exec())
+    def run(self):
+        window = self.window
+        while True:
+            client.publish('base/state/humidity', float(np.random.randint(0, 100, 1)))
+            client.publish('base/state/temperature', float(np.random.randint(0, 100, 1)))
+            sleep(1)
+
+
+# The callback for when the client receives a CONNACK response from the server.
+
+def on_connect(client, userdata, flags, rc):
+    print('Connected with result code ' + str(rc))
+
+    # Subscribing in on_connect() means that if we lose the connection and
+    # reconnect then subscriptions will be renewed.
+    # client.subscribe('$SYS/#')
+
+
+# The callback for when a PUBLISH message is received from the server.
+def on_message(client, userdata, msg):
+    print(msg.topic + ' ' + str(msg.payload))
+    window.label.setText(str(msg.payload))
+
+
+use_logger, use_auth = True, True
+
+client_id = 'mqtt-iprofi_101914952-6y49xq'
+username, password = 'maksim64', 'simplepassword'
+host, port, keepalive = 'sandbox.rightech.io', 1883, 60
+
+client = mqtt.Client(client_id=client_id)
+client.on_connect = on_connect
+client.on_message = on_message
+
+if use_logger:
+    client.enable_logger(logger=None)
+if use_auth:
+    client.username_pw_set(username=username, password=password)
+
+client.connect(host=host, port=port, keepalive=keepalive)
+
+client.loop_start()
+
+application = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+
+thread = LogicThread(window)
+thread.start()
+
+sys.exit(application.exec())
