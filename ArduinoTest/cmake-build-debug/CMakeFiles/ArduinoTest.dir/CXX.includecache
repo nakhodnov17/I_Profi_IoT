@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/ArduinoTest_arduino_test.ino.cpp
+Arduino.h
+-
+libraries/DHT/DHT.cpp
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/libraries/DHT/DHT.cpp
+Arduino.h
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/Arduino.h
+

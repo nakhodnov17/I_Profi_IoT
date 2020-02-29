@@ -1,0 +1,7 @@
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/ArduinoTest-size.dir
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/ArduinoTest.dir
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/uno_CORE.dir
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/ArduinoTest-upload.dir
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/upload.dir
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/nahod/Documents/CodeBlocks/MSU/I Professional/2020/IoT/ArduinoTest/cmake-build-debug/CMakeFiles/rebuild_cache.dir

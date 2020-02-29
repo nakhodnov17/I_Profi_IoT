@@ -1,0 +1,4 @@
+# Hashes of file build rules.
+9c418ac73231105780825337e286b17b ArduinoTest_arduino_test.ino.cpp
+0d88d74778397dac334c9abc278db279 CMakeFiles/ArduinoTest-size
+c37366fafc754a483f01634efcb1f060 CMakeFiles/ArduinoTest-upload
